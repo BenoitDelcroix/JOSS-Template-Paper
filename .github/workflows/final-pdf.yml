@@ -1,24 +1,25 @@
-name: Final PDF
+name: Production PDF
+
 on: [push]
 
 jobs:
   paper:
     runs-on: ubuntu-latest
-    name: Paper Final
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Build final PDF
-        uses: openjournals/openjournals-final-action@master
-        with:
-          journal: joss
-          # This should be the path to the paper within your repo.
-          paper-path: paper.md
+        uses: actions/checkout@v5
+
+      - name: Build production PDF
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/data \
+            -e JOURNAL=joss \
+            openjournals/inara \
+            -o pdf -p paper.md
+
       - name: Upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: paper
-          # This is the output path where Pandoc will write the compiled
-          # PDF. Note, this should be the same directory as the input
-          # paper.md
-          path: paper-final.pdf
+          path: paper.pdf

@@ -1,24 +1,24 @@
-name: PDF Build
+name: Final PDF
 on: [push]
 
 jobs:
   paper:
     runs-on: ubuntu-latest
-    name: Build PDF
+    name: Paper Final
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Build PDF with Pandoc
-        uses: docker://pandoc/latex:latest
+      - name: Build final PDF
+        uses: openjournals/openjournals-final-action@master
         with:
-          args: >-
-            paper.md
-            --citeproc
-            --output=paper.pdf
-      
+          journal: joss
+          # This should be the path to the paper within your repo.
+          paper-path: paper.md
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: paper
-          path: paper.pdf
+          # This is the output path where Pandoc will write the compiled
+          # PDF. Note, this should be the same directory as the input
+          # paper.md
+          path: paper-final.pdf
